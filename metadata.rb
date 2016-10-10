@@ -1,4 +1,4 @@
-name             "elasticsearch"
+name             "elasticsearch-legacy"
 
 maintainer       "karmi"
 maintainer_email "karmi@karmi.cz"
@@ -14,12 +14,12 @@ recommends 'xml'
 recommends 'java'
 recommends 'monit'
 
-provides 'elasticsearch'
-provides 'elasticsearch::data'
-provides 'elasticsearch::ebs'
-provides 'elasticsearch::aws'
-provides 'elasticsearch::nginx'
-provides 'elasticsearch::proxy'
-provides 'elasticsearch::plugins'
-provides 'elasticsearch::monit'
-provides 'elasticsearch::search_discovery'
+provides 'elasticsearch-legacy'
+provides 'elasticsearch-legacy::data'
+provides 'elasticsearch-legacy::ebs'
+provides 'elasticsearch-legacy::aws'
+provides 'elasticsearch-legacy::nginx'
+provides 'elasticsearch-legacy::proxy'
+provides 'elasticsearch-legacy::plugins'
+provides 'elasticsearch-legacy::monit'
+provides 'elasticsearch-legacy::search_discovery'
