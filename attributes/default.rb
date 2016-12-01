@@ -6,9 +6,6 @@ Chef::Log.debug "Loaded settings: #{settings.inspect}"
 # Initialize the node attributes with node attributes merged with data bag attributes
 #
 node.default[:elasticsearch] ||= {}
-node.normal[:elasticsearch]  ||= {}
-node.normal[:elasticsearch]    = DeepMerge.merge(node.default[:elasticsearch].to_hash, node.normal[:elasticsearch].to_hash)
-node.normal[:elasticsearch]    = DeepMerge.merge(node.normal[:elasticsearch].to_hash, settings.to_hash)
 
 
 # === VERSION AND LOCATION
