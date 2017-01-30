@@ -7,6 +7,8 @@ class ElasticsearchCookbook::ServiceProvider < Chef::Provider::LWRPBase
     true
   end
 
+  use_inline_resources
+
   action :remove do
     raise "#{new_resource} remove not currently implemented"
   end
@@ -38,10 +40,6 @@ class ElasticsearchCookbook::ServiceProvider < Chef::Provider::LWRPBase
       action :create
     end
 
-    # flatten in an array here, in case the service_actions are a symbol vs. array
-    [new_resource.service_actions].flatten.each do |act|
-      passthrough_action(act)
-    end
   end
 
   # Passthrough actions to service[service_name]
