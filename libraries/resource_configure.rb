@@ -40,13 +40,13 @@ class ElasticsearchCookbook::ConfigureResource < Chef::Resource::LWRPBase
   }.freeze)
 
   attribute(:template_elasticsearch_env, kind_of: String, default: 'elasticsearch.in.sh.erb')
-  attribute(:cookbook_elasticsearch_env, kind_of: String, default: 'elasticsearch')
+  attribute(:cookbook_elasticsearch_env, kind_of: String, default: 'elasticsearch-2')
 
   attribute(:template_elasticsearch_yml, kind_of: String, default: 'elasticsearch.yml.erb')
-  attribute(:cookbook_elasticsearch_yml, kind_of: String, default: 'elasticsearch')
+  attribute(:cookbook_elasticsearch_yml, kind_of: String, default: 'elasticsearch-2')
 
   attribute(:template_logging_yml, kind_of: String, default: 'logging.yml.erb')
-  attribute(:cookbook_logging_yml, kind_of: String, default: 'elasticsearch')
+  attribute(:cookbook_logging_yml, kind_of: String, default: 'elasticsearch-2')
 
   attribute(:logging, kind_of: Hash, default: {}.freeze)
 
