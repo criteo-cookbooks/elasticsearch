@@ -16,7 +16,11 @@ WorkingDirectory=<%= @path_home %>
 User=elasticsearch
 Group=elasticsearch
 
-ExecStart=<%= @path_home %>/bin/elasticsearch -p ${PID_DIR}/elasticsearch.pid --quiet
+# The -Edefault.path.conf is necessary for ES 5.x which doesn't handle
+# ES_PATH_CONF.
+ExecStart=<%= @path_home %>/bin/elasticsearch -p ${PID_DIR}/elasticsearch.pid --quiet \
+                        -Edefault.path.conf=${ES_PATH_CONF}
+
 
 # StandardOutput is configured to redirect to journalctl since
 # some error messages may be logged in standard output before
