@@ -89,6 +89,16 @@ class ElasticsearchCookbook::PluginProvider < Chef::Provider::LWRPBase
     include_file_resource = find_exact_resource(run_ctx, :template, "elasticsearch.in.sh-#{default_config_name}")
     env = { 'ES_INCLUDE' => include_file_resource.path }
 
+    # ES 6 and 7 doesn't use anymore ES_INCLUDE env variables which leads ES_PATH_CONF not being well generated
+    # some plugin like repository-s3 need the conf folder to be well set to push some config files
+    # reading the env files and extracting env variable so ES_PATH_CONF is well set
+    ::File.open(include_file_resource.path)
+          .readlines.map(&:chomp)
+          .select {|line| !line.start_with?("#") } # remove commented lines
+          .select {|line| line.include?("=") } # only kept those which sets env variable
+          .map {|line| line.split("=")}
+          .each{ |k,v| env[k] = v }
+
     # Add HTTP Proxy vars unless explicitly told not to
     if new_resource.chef_proxy
       env['ES_JAVA_OPTS'] = "#{ENV['ES_JAVA_OPTS']} #{get_java_proxy_arguments}"
