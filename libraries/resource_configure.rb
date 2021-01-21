@@ -55,13 +55,12 @@ class ElasticsearchCookbook::ConfigureResource < Chef::Resource::LWRPBase
       -Djava.awt.headless=true
       -Dfile.encoding=UTF-8
       -Djna.nosys=true
-      -Djdk.io.permissionsUseCanonicalPath=true
+      -XX:-OmitStackTraceInFastThrow
       -Dio.netty.noUnsafe=true
       -Dio.netty.noKeySetOptimization=true
       -Dio.netty.recycler.maxCapacityPerThread=0
       -Dlog4j.shutdownHookEnabled=false
       -Dlog4j2.disable.jmx=true
-      -Dlog4j.skipJansi=true
       -XX:+HeapDumpOnOutOfMemoryError
     ).freeze)
 
@@ -75,7 +74,6 @@ class ElasticsearchCookbook::ConfigureResource < Chef::Resource::LWRPBase
     'node.name' => Chef::Config[:node_name],
 
     # if omitted or nil, these will be populated from attributes above
-    'path.conf' => nil, # see path_conf above
     'path.data' => nil, # see path_data above
     'path.logs' => nil, # see path_logs above
 

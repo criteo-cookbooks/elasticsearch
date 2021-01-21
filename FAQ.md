@@ -8,17 +8,18 @@ This cookbook requires java, but does not provide it. Please install Java before
 
 ### What version of [Chef](https://www.chef.io/) does this cookbook require/support?
 
-This cookbook follows the [recommended Chef community cookbook policy](https://github.com/chef/chef-rfc/blob/master/rfc092-dependency-update-cadence.md#cookbook-and-ecosystem-tooling-support) regarding Chef support; specifically, we support at least the last 6 months of Chef Client versions. We explicitly don't support anything less than Chef 12.x. We run CI as well as testing with chefspec and test-kitchen.
+This cookbook follows the [recommended Chef community cookbook policy](https://github.com/chef/chef-rfc/blob/master/rfc092-dependency-update-cadence.md#cookbook-and-ecosystem-tooling-support) regarding Chef support; specifically, we support at least the last 6 months of Chef Client versions. We explicitly don't support anything less than Chef 12.5 and greater. We run CI as well as testing with chefspec and test-kitchen.
 
 ### What versions of [Elasticsearch](https://www.elastic.co/products/elasticsearch) does this cookbook support?
 
-This cookbook is being written and tested to support Elasticsearch 5.x and greater. If you must have a cookbook that works with older versions of Elasticsearch, please test and then pin to a specific, older `major.minor` version of this cookbook and only leave the patch release to float. Older versions can be found via [Git tags](https://github.com/elastic/cookbook-elasticsearch/tags) or on [Chef Supermarket](https://supermarket.chef.io/cookbooks/elasticsearch). We also maintain bugfix branches for major released lines (0.x, 1.x, 2.x) of this cookbook so that we can still release fixes for older cookbooks. Previous versions of this cookbook may be found using the git tags on this repository.
+This cookbook is being written and tested to support Elasticsearch 6.x and greater. If you must have a cookbook that works with older versions of Elasticsearch, please test and then pin to a specific, older `major.minor` version of this cookbook and only leave the patch release to float. Older versions can be found via [Git tags](https://github.com/elastic/cookbook-elasticsearch/tags) or on [Chef Supermarket](https://supermarket.chef.io/cookbooks/elasticsearch). We also maintain bugfix branches for major released lines (0.x, 1.x, 2.x, 3.x) of this cookbook so that we can still release fixes for older cookbooks. Previous versions of this cookbook may be found using the git tags on this repository.
 
 ## How do I...
 
 ### How do I set the JVM heap size?
 
-The [allocated_memory](https://github.com/elastic/cookbook-elasticsearch/blob/master/libraries/provider_configure.rb#L115-L119) parameter controls this.
+The [allocated_memory](https://github.com/elastic/cookbook-elasticsearch/blob/master/libraries/provider_configure.rb#L27-L32) parameter controls this.
+If you do not set this parameter, the heap size will be set to 50% of system memory or 31g, whatever is smaller.
 
 ### How should I discover other Elasticsearch nodes?
 
@@ -65,6 +66,25 @@ Per 5.3.1 release notes, Elasticsearch now fails to start if you provide default
 
 TL;DR -- you should upgrade and get the bugfix (of the original bugfix). See https://github.com/elastic/cookbook-elasticsearch/issues/563 for more information.
 
+### Java "trust anchors" error when installing Elasticseach plugins
+
+If you're using OpenJDK, installing Elasticsearch plugins might fail with a Java SSL exception:
+
+```
+Exception in thread "main" javax.net.ssl.SSLException: java.lang.RuntimeException: Unexpected error: java.security.InvalidAlgorithmParameterException: the trustAnchors parameter must be non-empty
+```
+
+This can be fixed by running the configuration for the `ca-certificates-java` package before installing any plugins:
+
+```rb
+# http://phutchins.com/blog/2017/03/14/java-trust-anchors-error-when-installing-es-plugins/
+execute "ca-certificates-configure" do
+  command "sudo /var/lib/dpkg/info/ca-certificates-java.postinst configure"
+end
+```
+
+See [this article](http://phutchins.com/blog/2017/03/14/java-trust-anchors-error-when-installing-es-plugins/) for more details.
+
 ### Chef::Exceptions::Package: Installed package is newer than candidate package
 
 You may be trying to downgrade Elasticsearch, or the newer package has gone missing from their repos. Depending on what you'd like to do next, you may [provide package_options arguments](https://github.com/elastic/cookbook-elasticsearch/blob/master/libraries/resource_install.rb#L27) to yum or apt to tell it what you'd like to do more specifically. In #571, someone else has figured out how to direct apt/dpkg to upgrade the way they want, but we didn't want to prescribe what end users want their package manager to do.
@@ -109,3 +129,7 @@ es_conf.path_data data_location if data_location
 
 This is a known issue upstream and the packaging folks have been working to resolve it. You can follow along at:
 https://github.com/elastic/elasticsearch/issues/25846
+
+### How do I test multiple Elasticsearch nodes in test-kitchen?
+
+Check out https://github.com/elastic/cookbook-elasticsearch/pull/648/files for an example of one possible solution.

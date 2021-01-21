@@ -36,6 +36,11 @@ class ElasticsearchCookbook::InstallProvider < Chef::Provider::LWRPBase
   protected
 
   def install_repo_wrapper_action
+    es_user = find_es_resource(Chef.run_context, :elasticsearch_user, new_resource)
+    unless es_user && es_user.username == 'elasticsearch' && es_user.groupname == 'elasticsearch'
+      raise 'Custom usernames/group names is not supported in Elasticsearch 6+ repository installation'
+    end
+
     if new_resource.enable_repository_actions
       if node['platform_family'] == 'debian'
         apt_r = apt_repo_resource
@@ -48,7 +53,7 @@ class ElasticsearchCookbook::InstallProvider < Chef::Provider::LWRPBase
       end
     end
 
-    if node['platform_family'] == 'rhel' && !new_resource.version.include?('-')
+    if !new_resource.version.nil? && %w[rhel amazon].include?(node['platform_family']) && !new_resource.version.include?('-')
       # NB: yum repo packages are broken in Chef if you don't specify a release
       #     https://github.com/chef/chef/issues/4103
       new_resource.version = "#{new_resource.version}-1"
@@ -87,6 +92,11 @@ class ElasticsearchCookbook::InstallProvider < Chef::Provider::LWRPBase
   end
 
   def install_package_wrapper_action
+    es_user = find_es_resource(Chef.run_context, :elasticsearch_user, new_resource)
+    unless es_user && es_user.username == 'elasticsearch' && es_user.groupname == 'elasticsearch'
+      raise 'Custom usernames/group names is not supported in Elasticsearch 6+ package installation'
+    end
+
     found_download_url = determine_download_url(new_resource, node)
     unless found_download_url
       raise 'Could not determine download url for package on this platform'
@@ -209,16 +219,16 @@ class ElasticsearchCookbook::InstallProvider < Chef::Provider::LWRPBase
   end
 
   def yum_repo_resource
-    yum_repository 'elastic-5.x' do
-      baseurl 'https://artifacts.elastic.co/packages/5.x/yum'
+    yum_repository "elastic-#{new_resource.version.to_i}.x" do
+      baseurl "https://artifacts.elastic.co/packages/#{new_resource.version.to_i}.x/yum"
       gpgkey 'https://artifacts.elastic.co/GPG-KEY-elasticsearch'
       action :nothing # :add, remove
     end
   end
 
   def apt_repo_resource
-    apt_repository 'elastic-5.x' do
-      uri 'https://artifacts.elastic.co/packages/5.x/apt'
+    apt_repository "elastic-#{new_resource.version.to_i}.x" do
+      uri "https://artifacts.elastic.co/packages/#{new_resource.version.to_i}.x/apt"
       key 'https://artifacts.elastic.co/GPG-KEY-elasticsearch'
       components ['main']
       distribution 'stable'

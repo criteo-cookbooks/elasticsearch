@@ -1,9 +1,9 @@
 # this is a test fixture used to test that the elasticsearch cookbook's
 # resources, providers, and recipes can be used correctly from a wrapper
 
-# create user with all non-default overriden options
+# create user with all non-default overriden options (except user/group, ESv6)
 elasticsearch_user 'foobar' do
-  groupname 'bar'
+  groupname 'elasticsearch' # can't override this w/ package in ESv6
   username 'elasticsearch' # can't override this in systemd, so can't test!
   uid 1111
   gid 2222
@@ -39,7 +39,7 @@ elasticsearch_configure 'my_elasticsearch' do
   instance_name 'special_package_instance'
 end
 
-elasticsearch_plugin 'x-pack' do
+elasticsearch_plugin 'analysis-icu' do
   instance_name 'special_package_instance'
 end
 

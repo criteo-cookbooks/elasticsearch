@@ -12,14 +12,11 @@ class ElasticsearchCookbook::ConfigureProvider < Chef::Provider::LWRPBase
     # lookup existing ES resources
     es_user = find_es_resource(Chef.run_context, :elasticsearch_user, new_resource)
     es_svc = find_es_resource(Chef.run_context, :elasticsearch_service, new_resource)
+    es_install = find_es_resource(Chef.run_context, :elasticsearch_install, new_resource)
 
     default_configuration = new_resource.default_configuration.dup
     # if a subdir parameter is missing but dir is set, infer the subdir name
     # then go and be sure it's also set in the YML hash if it wasn't given there
-    if new_resource.path_conf && default_configuration['path.conf'].nil?
-      default_configuration['path.conf'] = new_resource.path_conf
-    end
-
     if new_resource.path_data && default_configuration['path.data'].nil?
       default_configuration['path.data'] = new_resource.path_data
     end
@@ -69,7 +66,7 @@ class ElasticsearchCookbook::ConfigureProvider < Chef::Provider::LWRPBase
     # Create elasticsearch shell variables file
     #
     # Valid values in /etc/sysconfig/elasticsearch or /etc/default/elasticsearch
-    # ES_HOME JAVA_HOME CONF_DIR DATA_DIR LOG_DIR PID_DIR ES_JAVA_OPTS
+    # ES_HOME JAVA_HOME ES_PATH_CONF DATA_DIR LOG_DIR PID_DIR ES_JAVA_OPTS
     # RESTART_ON_UPGRADE ES_USER ES_GROUP ES_STARTUP_SLEEP_TIME MAX_OPEN_FILES
     # MAX_LOCKED_MEMORY MAX_MAP_COUNT
     #
@@ -78,23 +75,22 @@ class ElasticsearchCookbook::ConfigureProvider < Chef::Provider::LWRPBase
     params = {}
     params[:ES_HOME] = new_resource.path_home
     params[:JAVA_HOME] = new_resource.java_home
-    params[:CONF_DIR] = new_resource.path_conf
+    params[:ES_PATH_CONF] = new_resource.path_conf
     params[:DATA_DIR] = new_resource.path_data
     params[:LOG_DIR] = new_resource.path_logs
     params[:PID_DIR] = new_resource.path_pid
     params[:RESTART_ON_UPGRADE] = new_resource.restart_on_upgrade
-    params[:ES_USER] = es_user.username
-    params[:ES_GROUP] = es_user.groupname
+    params[:ES_USER] = es_user.username if es_install.type == 'tarball'
+    params[:ES_GROUP] = es_user.groupname if es_install.type == 'tarball'
     params[:ES_STARTUP_SLEEP_TIME] = new_resource.startup_sleep_seconds.to_s
     params[:MAX_OPEN_FILES] = new_resource.nofile_limit
     params[:MAX_LOCKED_MEMORY] = new_resource.memlock_limit
     params[:MAX_MAP_COUNT] = new_resource.max_map_count
-    params[:ES_JVM_OPTIONS] = "#{new_resource.path_conf}/jvm.options"
 
     default_config_name = es_svc.service_name || es_svc.instance_name || new_resource.instance_name || 'elasticsearch'
 
     shell_template = template "elasticsearch.in.sh-#{default_config_name}" do
-      path node['platform_family'] == 'rhel' ? "/etc/sysconfig/#{default_config_name}" : "/etc/default/#{default_config_name}"
+      path %w[rhel amazon].include?(node['platform_family']) ? "/etc/sysconfig/#{default_config_name}" : "/etc/default/#{default_config_name}"
       source new_resource.template_elasticsearch_env
       cookbook new_resource.cookbook_elasticsearch_env
       mode '0644'

@@ -4,6 +4,10 @@
 
 **Please** review the [frequently asked questions](FAQ.md) and [contributing guidelines](CONTRIBUTING.md) before opening issues or submitting pull requests.
 
+## Looking for Elasticsearch 5.x or 6.x?
+
+Please [check out the previous 3.x.x releases](https://github.com/elastic/cookbook-elasticsearch/tree/3.x.x) of this cookbook. Please consider pinning your cookbook to '~> 3.0' for support for Elasticsearch 6 and earlier, or '~> 4.0' release for Elasticsearch 6 and beyond.
+
 ## Attributes
 
 Please consult [attributes/default.rb](attributes/default.rb) for a large list
@@ -16,9 +20,14 @@ the version parameter as a string into your download_url.
 
 |Name|Default|Other values|
 |----|-------|------------|
+| For Elasticsearch < 7: ||
 |`default['elasticsearch']['download_urls']['debian']`|[See values](attributes/default.rb).|`%s` will be replaced with the version attribute above|
 |`default['elasticsearch']['download_urls']['rhel']`|[See values](attributes/default.rb).|`%s` will be replaced with the version attribute above|
 |`default['elasticsearch']['download_urls']['tarball']`|[See values](attributes/default.rb).|`%s` will be replaced with the version attribute above|
+| For Elasticsearch >= 7: ||
+|`default['elasticsearch']['download_urls_v7']['debian']`|[See values](attributes/default.rb).|`%s` will be replaced with the version attribute above|
+|`default['elasticsearch']['download_urls_v7']['rhel']`|[See values](attributes/default.rb).|`%s` will be replaced with the version attribute above|
+|`default['elasticsearch']['download_urls_v7']['tarball']`|[See values](attributes/default.rb).|`%s` will be replaced with the version attribute above|
 
 This cookbook's `elasticsearch::default` recipe also supports setting any `elasticsearch_` resource using attributes:
 
@@ -147,7 +156,7 @@ elasticsearch_install 'elasticsearch'
 ```ruby
 elasticsearch_install 'my_es_installation' do
   type 'package' # type of install
-  version '5.6.3'
+  version '7.4.2'
   action :install # could be :remove as well
 end
 ```
@@ -168,7 +177,7 @@ end
 ```ruby
 elasticsearch_install 'my_es_installation' do
   type 'tarball' # type of install
-  version '5.6.3'
+  version '7.4.2'
   action :install # could be :remove as well
 end
 ```

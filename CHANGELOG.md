@@ -1,5 +1,63 @@
 # Change Log
 
+## [v4.3.0](https://github.com/elastic/cookbook-elasticsearch/tree/v4.3.0) (2019-12-30)
+- Default to Elasticsearch 7.4.2
+
+## [v4.2.0](https://github.com/elastic/cookbook-elasticsearch/tree/v4.2.0) (2019-08-02)
+- Default to Elasticsearch 7.3.0
+- Some fixes for the version logic when selecting v7 or higher ES
+
+## [v4.1.0](https://github.com/elastic/cookbook-elasticsearch/tree/v4.1.0) (2019-08-02)
+- Added support for ES 6.8.1, 6.8.2 and new default of 6.8.2
+- Added support for ES v7, with 7.0.0, 7.0.1, 7.1.0, 7.2.0, 7.2.1, 7.3.0
+- New URL format for ES v7 introduced, taught lib/helpers how to use it
+- Bumped testing to use Chef v14
+- Modified testing with test-kitchen to stop using x-pack as a test plugin, now using analysis-icu
+- Some minor tweaks to get chefspec tests working again
+
+## [v4.0.6](https://github.com/elastic/cookbook-elasticsearch/tree/v4.0.6) (2019-05-22)
+- Lots of new hashes of more recent releases of ES, see PRs for full list (#715, #713, #710, #709, #705, #704, #701).
+- Get Travis building again (#714).
+
+## [v4.0.5](https://github.com/elastic/cookbook-elasticsearch/tree/v4.0.5) (2019-01-02)
+- Add hashes for 6.5.4 (#699), 6.5.3 (#697)
+
+## [v4.0.4](https://github.com/elastic/cookbook-elasticsearch/tree/v4.0.4) (2018-11-06)
+- Add hashes for 6.4.2 (#687)
+
+## [v4.0.3](https://github.com/elastic/cookbook-elasticsearch/tree/v4.0.3) (2018-09-24)
+- Add hashes for 6.4.1 (#682)
+
+## [v4.0.2](https://github.com/elastic/cookbook-elasticsearch/tree/v4.0.2) (2018-09-17)
+- Add hashes for 6.3.0 (#669), 6.3.1 (#673), 6.4.0 (#677)
+
+## [v4.0.1](https://github.com/elastic/cookbook-elasticsearch/tree/v4.0.1) (2018-06-01)
+- Add hashes for 6.2.4 (#665)
+- Improve ES_USER / ES_GROUP logic for init script and package installs (#647)
+
+## [v4.0.0](https://github.com/elastic/cookbook-elasticsearch/tree/v4.0.0) (2018-03-25)
+- Default to 6.0.0 and add sha256 checksums, drop old 5.x hashes
+- Point to 6.x yum repo
+- Introduce 6.0.0's JVM options for ES 6
+- ES_JVM_OPTIONS is no longer supported in v6.0.0
+- Correct tests with x-pack installation
+- Remove test for config entry that is no longer valid
+- Remove path.conf reference after testing
+- Stop testing on Ubuntu 12.04 and earlier
+
+## [v3.4.5](https://github.com/elastic/cookbook-elasticsearch/tree/v3.4.5) (2018-03-25)
+- Add documentation for Java "trust anchors" problem (#646)
+- Add hashes for 5.6.8 (#649)
+
+## [v3.4.4](https://github.com/elastic/cookbook-elasticsearch/tree/v3.4.4) (2018-02-01)
+- Add hashes for ES 5.6.6 (#638) and ES 5.6.7 (#640)
+
+## [v3.4.3](https://github.com/elastic/cookbook-elasticsearch/tree/v3.4.3) (2018-01-03)
+- Add hashes for ES 5.6.5 (#632)
+
+## [v3.4.2](https://github.com/elastic/cookbook-elasticsearch/tree/v3.4.2) (2017-12-03)
+- Add hashes for ES 5.6.4 (#622)
+
 ## [v3.4.1](https://github.com/elastic/cookbook-elasticsearch/tree/v3.4.1) (2017-10-18)
 - Add hashes for ES 5.6.3 (#616)
 

@@ -14,8 +14,8 @@ include_recipe 'chef-sugar'
 # see README.md
 include_recipe 'elasticsearch::default'
 
-# by default, no plugins, but we do the x-pack
-elasticsearch_plugin 'x-pack' do
+# by default, no plugins, but we'd like to try one
+elasticsearch_plugin 'analysis-icu' do
   notifies :restart, 'elasticsearch_service[elasticsearch]', :delayed
 end
 
